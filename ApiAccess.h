@@ -1,27 +1,19 @@
-#pragma once
+//ApiAccess.h
 
-#include <windows.h>
-#include <wininet.h>
+#pragma once
 #include <string>
-#include <vector>
+#include <curl/curl.h>
 
 class ApiAccess {
 public:
-    // Constructor to initialize API key and base URL
-    ApiAccess(const std::string& apiKey = "WS6EM8MYALPWZ37O");
+    ApiAccess(const std::string& apiKey);
+    ~ApiAccess();
 
-    // Function to retrieve real-time price for a given symbol
-    double getRealTimePrice(const std::string& symbol) const;
-
-    // Function to retrieve real-time prices for multiple symbols
-    void getRealTimePrices(const std::vector<std::string>& symbols, std::vector<double>& prices) const;
+    std::string fetchStockData(const std::string& urlSymbol);
 
 private:
-    // Private member variables
-    std::string m_apiKey;
-    std::string m_baseUrl;
+    CURL* curl_;
+    std::string apiKey_;
 
-    // Private functions for P/Invoke and API interaction
-    std::string makeApiCall(const std::string& url) const;
-    std::string buildApiUrl(const std::string& endpoint, const std::string& symbol) const;
+    static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output);
 };

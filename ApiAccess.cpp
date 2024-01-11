@@ -1,83 +1,56 @@
+//ApiAccess.cpp
+
 #include "ApiAccess.h"
-
 #include <iostream>
-#include <sstream>
+#include <curl/curl.h>
 
-ApiAccess::ApiAccess(const std::string& apiKey) : m_apiKey(apiKey), m_baseUrl("https://www.alphavantage.co/query?") {}
+const std::string KEY = "WS6EM8MYALPWZ37O";
+const std::string BASE_URL = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=";
 
-std::string ApiAccess::makeApiCall(const std::string& url) const {
-    HINTERNET hInternet = InternetOpenA("MyAgent", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-    if (!hInternet) {
-        std::cerr << "Error opening internet session: " << GetLastError() << std::endl;
-        return "";
-    }
-
-    HINTERNET hConnect = InternetConnectA(hInternet, "www.alphavantage.co", INTERNET_DEFAULT_HTTP_PORT, NULL, NULL, 0, 0, 0);
-    if (!hConnect) {
-        InternetCloseHandle(hInternet);
-        std::cerr << "Error connecting to Alpha Vantage: " << GetLastError() << std::endl;
-        return "";
-    }
-
-    HINTERNET hRequest = HttpOpenRequestA(hConnect, "GET", url.c_str(), NULL, NULL, NULL, INTERNET_FLAG_RELOAD, 0);
-    if (!hRequest) {
-        InternetCloseHandle(hConnect);
-        InternetCloseHandle(hInternet);
-        std::cerr << "Error opening HTTP request: " << GetLastError() << std::endl;
-        return "";
-    }
-
-    if (!HttpSendRequestA(hRequest, NULL, 0, NULL, 0)) {
-        InternetCloseHandle(hRequest);
-        InternetCloseHandle(hConnect);
-        InternetCloseHandle(hInternet);
-        std::cerr << "Error sending HTTP request: " << GetLastError() << std::endl;
-        return "";
-    }
-
-    char buffer[1024];
-    DWORD bytesRead;
-    std::string response;
-    while (InternetReadFile(hRequest, buffer, sizeof(buffer), &bytesRead)) {
-        response.append(buffer, bytesRead);
-    }
-
-    InternetCloseHandle(hRequest);
-    InternetCloseHandle(hConnect);
-    InternetCloseHandle(hInternet);
-
-    return response;
+ApiAccess::ApiAccess(const std::string& apiKey) : apiKey_(apiKey) {
+    curl_ = curl_easy_init();
 }
 
-std::string ApiAccess::buildApiUrl(const std::string& endpoint, const std::string& symbol) const {
-    return m_baseUrl + "function=" + endpoint + "&symbol=" + symbol + "&apikey=" + m_apiKey;
+ApiAccess::~ApiAccess() {
+    if (curl_) {
+        curl_easy_cleanup(curl_);
+    }
 }
 
-double ApiAccess::getRealTimePrice(const std::string& symbol) const {
-    std::string url = buildApiUrl("GLOBAL_QUOTE", symbol);
-    std::string response = makeApiCall(url);
+std::string ApiAccess::fetchStockData(const std::string& urlSymbol) {
+    std::string result;
+    std::string tempURL = BASE_URL + urlSymbol + "&apikey=" + KEY;
 
-    // Manually parse JSON response
-    size_t latestPriceStart = response.find("\"latestPrice\":") + 14;  // Adjusted index for consistency
-    size_t latestPriceEnd = response.find(",", latestPriceStart);
-    std::string priceStr = response.substr(latestPriceStart, latestPriceEnd - latestPriceStart);
+    if (curl_) {
+        //sets the url
+        curl_easy_setopt(curl_, CURLOPT_URL, tempURL.c_str());
 
-    // Convert extracted price string to double
-    double price;
-    try {
-        std::stringstream ss(priceStr);
-        ss >> price;
+        //sets the write callback to get the response
+        curl_easy_setopt(curl_, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl_, CURLOPT_WRITEDATA, &result);
+
+
+        //performs the request
+        CURLcode res = curl_easy_perform(curl_);
+
+        //checks for errors
+        if (res != CURLE_OK) {
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+        }
     }
-    catch (const std::exception& e) {
-        std::cerr << "Error parsing price from response: " << e.what() << std::endl;
-        return 0.0;
+    else {
+        std::cerr << "Error initializing cURL." << std::endl;
     }
 
-    return price;
+    //if the symbol does not exist, it changes the return value
+    if (result.length() == 26)
+        result = "The symbol " + urlSymbol + " does not exist.";
+
+    return result;
 }
 
-void ApiAccess::getRealTimePrices(const std::vector<std::string>& symbols, std::vector<double>& prices) const {
-    for (const std::string& symbol : symbols) {
-        prices.push_back(getRealTimePrice(symbol));
-    }
+size_t ApiAccess::WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output) {
+    size_t totalSize = size * nmemb;
+    output->append(static_cast<char*>(contents), totalSize);
+    return totalSize;
 }

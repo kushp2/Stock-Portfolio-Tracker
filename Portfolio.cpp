@@ -1,3 +1,5 @@
+//Portfolio.cpp
+
 #include "Portfolio.h"
 
 
@@ -17,6 +19,8 @@ void Portfolio::removeStock(const std::string& symbol) {
     }
 }
 
+
+//get methods
 double Portfolio::getTotalValue() const {
     double totalValue = 0.0;
     for (const Stock& stock : stocks_) {
@@ -49,5 +53,10 @@ double Portfolio::getPercentageChange() const {
     change = (currentValue - initialValue) / initialValue * 100;
 
     return change;
+}
+
+//returns the stocks vector
+std::vector<Stock> Portfolio::getStocks() const {
+    return stocks_;
 }
 

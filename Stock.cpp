@@ -1,8 +1,13 @@
+//Stock.cpp
+
 #include "Stock.h"
 
 //constructor
-Stock::Stock(const std::string& symbol, double purchasePrice)
-	: symbol_(symbol), currentPrice_(0.0), purchasePrice_(purchasePrice) {}
+Stock::Stock(const std::string& symbol, double currentPrice, double purchasePrice, int quantitiy)
+	: symbol_(symbol), currentPrice_(currentPrice), purchasePrice_(purchasePrice), quantity_(quantitiy) {}
+
+Stock::Stock()
+	:symbol_("N/A"), currentPrice_(0.0), purchasePrice_(0.0), quantity_(0) {}
 
 
 //get methods

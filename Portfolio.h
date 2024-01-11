@@ -1,5 +1,6 @@
-#pragma once
+//Portfolio.h
 
+#pragma once
 #include <vector>
 #include "Stock.h"
 
@@ -10,6 +11,7 @@ public:
 
 	double getTotalValue() const;						//gets the total portfolio value
 	double getPercentageChange() const;					//gets the percent change of the portfolio value
+	std::vector<Stock> getStocks() const;							
 
 
 private:
