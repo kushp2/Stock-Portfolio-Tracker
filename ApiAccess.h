@@ -1,19 +1,20 @@
-//ApiAccess.h
-
 #pragma once
+
 #include <string>
+#include <msclr/marshal_cppstd.h>
 #include <curl/curl.h>
 
-class ApiAccess {
+class ApiAccess
+{
+private:
+    std::string apiKey_;
+    CURL* curl_;
+
 public:
-    ApiAccess(const std::string& apiKey);
+    ApiAccess();
     ~ApiAccess();
 
-    std::string fetchStockData(const std::string& urlSymbol);
-
-private:
-    CURL* curl_;
-    std::string apiKey_;
+    std::string fetchStockData(const std::string& symbol);
 
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* output);
 };

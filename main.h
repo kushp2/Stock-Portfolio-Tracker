@@ -1,22 +1,20 @@
-// main.h
-
 #pragma once
 
-#include "Stock.h"
-#include "ApiAccess.h"
-#include "Portfolio.h"
+#include "MyForm.h"
 
-class StockPortfolioApp {
-public:
-    StockPortfolioApp();
-    ~StockPortfolioApp();
+namespace StockPortfolioApp {
+    public ref class StockPortfolioAppForm : public System::Windows::Forms::Form {
+    public:
+        StockPortfolioAppForm() {
+            InitializeComponent();
+        }
 
-    void run();
+    private:
+        void InitializeComponent(void) {
+            // Initialize the components of your form
+            // Add controls, set properties, etc.
 
-private:
-    // Declare any members or additional functionality you need
-    // For example, you might have instances of Stock and ApiAccess.
-    Stock stock;
-    ApiAccess apiAccess;
-    Portfolio portfolio;
-};
+            this->Text = L"Stock Portfolio App";
+        }
+    };
+}
