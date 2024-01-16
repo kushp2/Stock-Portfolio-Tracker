@@ -1,3 +1,5 @@
-﻿  ApiAccess.cpp
+﻿  MyForm.cpp
+  main.cpp
+  Generating Code...
   ApiAccess.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
   stocks.vcxproj -> C:\projects\C++ Projects\stocks\x64\Debug\stocks.exe

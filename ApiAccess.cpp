@@ -50,10 +50,16 @@ std::string ApiAccess::fetchStockData(const std::string& symbol)
     else{
         std::cerr << "Error initializing cURL." << std::endl;
     }
-    result += '\n' + tempURL;
-    //if the symbol does not exist, change the return value
+
+    //if the symbol does not exist, change the return value, else cleans up the data
     if (result.length() == 26)
         result = "The symbol " + symbol + " does not exist.";
+    else {
+        result.erase(remove(result.begin(), result.end(), '\"'), result.end());
+        result.erase(remove(result.begin(), result.end(), '{'), result.end());
+        result.erase(remove(result.begin(), result.end(), '}'), result.end());
+
+    }
 
     return result;
 }
