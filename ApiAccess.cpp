@@ -55,10 +55,11 @@ std::string ApiAccess::fetchStockData(const std::string& symbol)
     if (result.length() == 26)
         result = "The symbol " + symbol + " does not exist.";
     else {
+        //cleans up the data
         result.erase(remove(result.begin(), result.end(), '\"'), result.end());
         result.erase(remove(result.begin(), result.end(), '{'), result.end());
         result.erase(remove(result.begin(), result.end(), '}'), result.end());
-
+        result.erase(remove(result.begin(), result.end(), ','), result.end());
     }
 
     return result;

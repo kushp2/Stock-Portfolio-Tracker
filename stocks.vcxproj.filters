@@ -21,9 +21,6 @@
     <ClCompile Include="Stock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Portfolio.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ApiAccess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,15 +30,18 @@
     <ClCompile Include="ApiWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UsersDB.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginForm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Stock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Portfolio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ApiAccess.h">
@@ -53,5 +53,16 @@
     <ClInclude Include="ApiWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UsersDB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoginForm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="sqlite3.dll" />
+    <None Include="UsersDB.db" />
   </ItemGroup>
 </Project>

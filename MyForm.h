@@ -1,6 +1,8 @@
 #pragma once
 
 #include "ApiWrapper.h"
+#include <sqlite3.h>
+
 
 namespace StockPortfolioApp {
 
@@ -91,6 +93,7 @@ namespace StockPortfolioApp {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Quantity_col;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ currentPrice_col;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ buyPrice_col;
+	private: System::Windows::Forms::Button^ button1;
 
 
 
@@ -130,6 +133,7 @@ namespace StockPortfolioApp {
 			this->Quantity_col = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->currentPrice_col = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->buyPrice_col = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
+			this->button1 = (gcnew System::Windows::Forms::Button());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->portfolioGrid))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -230,7 +234,7 @@ namespace StockPortfolioApp {
 			// 
 			this->Quantity_input->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->Quantity_input->Location = System::Drawing::Point(107, 455);
+			this->Quantity_input->Location = System::Drawing::Point(107, 453);
 			this->Quantity_input->Name = L"Quantity_input";
 			this->Quantity_input->Size = System::Drawing::Size(34, 33);
 			this->Quantity_input->TabIndex = 7;
@@ -267,7 +271,8 @@ namespace StockPortfolioApp {
 			this->portfolioGrid->Location = System::Drawing::Point(332, 49);
 			this->portfolioGrid->Name = L"portfolioGrid";
 			this->portfolioGrid->RowHeadersVisible = false;
-			this->portfolioGrid->Size = System::Drawing::Size(294, 458);
+			this->portfolioGrid->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
+			this->portfolioGrid->Size = System::Drawing::Size(294, 419);
 			this->portfolioGrid->TabIndex = 10;
 			// 
 			// Symbol_col
@@ -292,11 +297,27 @@ namespace StockPortfolioApp {
 			this->buyPrice_col->HeaderText = L"Buy Price";
 			this->buyPrice_col->Name = L"buyPrice_col";
 			// 
+			// button1
+			// 
+			this->button1->AccessibleName = L"Update";
+			this->button1->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::System;
+			this->button1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button1->ImageAlign = System::Drawing::ContentAlignment::TopCenter;
+			this->button1->Location = System::Drawing::Point(418, 474);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(109, 34);
+			this->button1->TabIndex = 11;
+			this->button1->Text = L"Update";
+			this->button1->UseVisualStyleBackColor = true;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(646, 538);
+			this->ClientSize = System::Drawing::Size(649, 541);
+			this->Controls->Add(this->button1);
 			this->Controls->Add(this->portfolioGrid);
 			this->Controls->Add(this->portfolio_Label);
 			this->Controls->Add(this->Error_Label);
@@ -317,8 +338,9 @@ namespace StockPortfolioApp {
 		}
 #pragma endregion
 
-		//sets up the api
+
 		private: 
+			//variables
 			ApiWrapper^ apiWrapper = gcnew ApiWrapper();			//holds the api wrapper
 			String^ current_symbol;									//holds the most recent entered symbol
 			String^ stock_data;										//holds the data of the most recent symbol

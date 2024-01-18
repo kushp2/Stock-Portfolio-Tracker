@@ -1,7 +1,0 @@
-C:\projects\C++ Projects\stocks\x64\Debug\stocks.vcxproj.AssemblyReference.cache
-C:\projects\C++ Projects\stocks\x64\Debug\stocks.MyForm.resources
-C:\projects\C++ Projects\stocks\x64\Debug\stocks.vcxproj.GenerateResource.cache
-C:\projects\C++ Projects\stocks\x64\Debug\stocks.vcxproj.CopyComplete
-C:\projects\C++ Projects\stocks\x64\Debug\stocks.exe
-C:\projects\C++ Projects\stocks\x64\Debug\libcurl-d.dll
-C:\projects\C++ Projects\stocks\x64\Debug\zlibd1.dll
