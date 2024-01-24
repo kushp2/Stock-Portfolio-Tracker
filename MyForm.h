@@ -1,8 +1,14 @@
+//MyForm.h
+//Used to display and edit a users portfolio 
+
 #pragma once
 
 #include "ApiWrapper.h"
 #include <sqlite3.h>
+#include <msclr/marshal_cppstd.h>
+#include "UsersDB.h"
 
+class UsersDB;
 
 namespace StockPortfolioApp {
 
@@ -12,6 +18,7 @@ namespace StockPortfolioApp {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace msclr::interop;
 
 	/// <summary>
 	/// Summary for MyForm
@@ -20,10 +27,10 @@ namespace StockPortfolioApp {
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
 	public:
-		MyForm(void)
+		MyForm(void* db, int userKey) : usersDB(static_cast<UsersDB*>(db)) 
 		{
-			InitializeComponent();
-			
+			primaryKey = userKey;
+			InitializeComponent();	
 		}
 
 	protected:
@@ -93,7 +100,11 @@ namespace StockPortfolioApp {
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ Quantity_col;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ currentPrice_col;
 	private: System::Windows::Forms::DataGridViewTextBoxColumn^ buyPrice_col;
-	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::Button^ updateButton;
+	private: System::Windows::Forms::Button^ saveButton;
+	private: System::Windows::Forms::Label^ savedDataLabel;
+
+
 
 
 
@@ -133,7 +144,9 @@ namespace StockPortfolioApp {
 			this->Quantity_col = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->currentPrice_col = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
 			this->buyPrice_col = (gcnew System::Windows::Forms::DataGridViewTextBoxColumn());
-			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->updateButton = (gcnew System::Windows::Forms::Button());
+			this->saveButton = (gcnew System::Windows::Forms::Button());
+			this->savedDataLabel = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->portfolioGrid))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -156,7 +169,6 @@ namespace StockPortfolioApp {
 			this->Symbol_Input->Name = L"Symbol_Input";
 			this->Symbol_Input->Size = System::Drawing::Size(158, 33);
 			this->Symbol_Input->TabIndex = 1;
-			this->Symbol_Input->TextChanged += gcnew System::EventHandler(this, &MyForm::Symbol_Input_TextChanged);
 			// 
 			// Search_Button
 			// 
@@ -272,7 +284,7 @@ namespace StockPortfolioApp {
 			this->portfolioGrid->Name = L"portfolioGrid";
 			this->portfolioGrid->RowHeadersVisible = false;
 			this->portfolioGrid->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->portfolioGrid->Size = System::Drawing::Size(294, 419);
+			this->portfolioGrid->Size = System::Drawing::Size(294, 404);
 			this->portfolioGrid->TabIndex = 10;
 			// 
 			// Symbol_col
@@ -297,27 +309,55 @@ namespace StockPortfolioApp {
 			this->buyPrice_col->HeaderText = L"Buy Price";
 			this->buyPrice_col->Name = L"buyPrice_col";
 			// 
-			// button1
+			// updateButton
 			// 
-			this->button1->AccessibleName = L"Update";
-			this->button1->Cursor = System::Windows::Forms::Cursors::Hand;
-			this->button1->FlatStyle = System::Windows::Forms::FlatStyle::System;
-			this->button1->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->updateButton->AccessibleName = L"Update";
+			this->updateButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->updateButton->FlatStyle = System::Windows::Forms::FlatStyle::System;
+			this->updateButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->button1->ImageAlign = System::Drawing::ContentAlignment::TopCenter;
-			this->button1->Location = System::Drawing::Point(418, 474);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(109, 34);
-			this->button1->TabIndex = 11;
-			this->button1->Text = L"Update";
-			this->button1->UseVisualStyleBackColor = true;
+			this->updateButton->ImageAlign = System::Drawing::ContentAlignment::TopCenter;
+			this->updateButton->Location = System::Drawing::Point(354, 483);
+			this->updateButton->Name = L"updateButton";
+			this->updateButton->Size = System::Drawing::Size(109, 34);
+			this->updateButton->TabIndex = 11;
+			this->updateButton->Text = L"Update";
+			this->updateButton->UseVisualStyleBackColor = true;
+			this->updateButton->Click += gcnew System::EventHandler(this, &MyForm::updateButton_Click);
+			// 
+			// saveButton
+			// 
+			this->saveButton->AccessibleName = L"Update";
+			this->saveButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->saveButton->FlatStyle = System::Windows::Forms::FlatStyle::System;
+			this->saveButton->Font = (gcnew System::Drawing::Font(L"Segoe UI", 14.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->saveButton->ImageAlign = System::Drawing::ContentAlignment::TopCenter;
+			this->saveButton->Location = System::Drawing::Point(505, 483);
+			this->saveButton->Name = L"saveButton";
+			this->saveButton->Size = System::Drawing::Size(109, 34);
+			this->saveButton->TabIndex = 12;
+			this->saveButton->Text = L"Save";
+			this->saveButton->UseVisualStyleBackColor = true;
+			this->saveButton->Click += gcnew System::EventHandler(this, &MyForm::saveButton_Click);
+			// 
+			// savedDataLabel
+			// 
+			this->savedDataLabel->ForeColor = System::Drawing::Color::Crimson;
+			this->savedDataLabel->Location = System::Drawing::Point(351, 456);
+			this->savedDataLabel->Name = L"savedDataLabel";
+			this->savedDataLabel->Size = System::Drawing::Size(263, 23);
+			this->savedDataLabel->TabIndex = 13;
+			this->savedDataLabel->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(649, 541);
-			this->Controls->Add(this->button1);
+			this->Controls->Add(this->savedDataLabel);
+			this->Controls->Add(this->saveButton);
+			this->Controls->Add(this->updateButton);
 			this->Controls->Add(this->portfolioGrid);
 			this->Controls->Add(this->portfolio_Label);
 			this->Controls->Add(this->Error_Label);
@@ -331,6 +371,7 @@ namespace StockPortfolioApp {
 			this->Controls->Add(this->Stock_Info);
 			this->Name = L"MyForm";
 			this->Text = L"Portfolio";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->portfolioGrid))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
@@ -344,8 +385,28 @@ namespace StockPortfolioApp {
 			ApiWrapper^ apiWrapper = gcnew ApiWrapper();			//holds the api wrapper
 			String^ current_symbol;									//holds the most recent entered symbol
 			String^ stock_data;										//holds the data of the most recent symbol
+			UsersDB* usersDB;										//holds the db
+			int primaryKey;											//holds the users primary key for the Users table
 
-		private: System::Void Symbol_Input_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+
+		//fills the table on startup	
+		private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+
+			//gets the portfolio data from the database and seperates each row
+			std::string portfolioData = usersDB->getPortfolioData(usersDB->getUserFromKey(primaryKey));
+			String^ managedPortfolioData = gcnew String(portfolioData.c_str());
+			array<String^>^ rows = managedPortfolioData->Split('\n');
+
+			if (portfolioData.empty()){
+				return;
+			}
+			
+			//loops through every row in the table
+			for each (String ^ row in rows) {
+				//separates the data and inputs it into the grid
+				array<String^>^ rowData = row->Split(' ');
+				portfolioGrid->Rows->Add(rowData);
+			}
 		}
 
 		//the search button on click
@@ -406,6 +467,7 @@ namespace StockPortfolioApp {
 			}
 				
 			Error_Label->Text = "";
+			savedDataLabel->Text = "Portfolio data not saved.";
 		}
 
 		//removes the input stock on click
@@ -452,9 +514,75 @@ namespace StockPortfolioApp {
 						row->Cells["Quantity_col"]->Value = newQuantity.ToString();
 					
 					Error_Label->Text = "";
+					savedDataLabel->Text = "Portfolio data not saved.";
 					return; 
 				}
 			}
 		}
-};
+	
+		//updates the stock table on click
+		private: System::Void updateButton_Click(System::Object^ sender, System::EventArgs^ e) {
+			bool changed = false;
+			
+			//for each row in the portfolioGrid
+			for each (DataGridViewRow ^ row in portfolioGrid->Rows) {
+				//gets the symbol to update
+				String^ current_symbol = row->Cells["Symbol_col"]->Value->ToString();
+				stock_data = apiWrapper->FetchStockData(current_symbol);
+				String^ oldPrice = row->Cells["currentPrice_col"]->Value->ToString();
+
+				//parses the data the api retrieved and gets the price
+				String^ updatedPrice;
+				array<String^>^ lines = stock_data->Split(gcnew array<wchar_t>{'\n'}, StringSplitOptions::RemoveEmptyEntries);
+				for each (String ^ line in lines) {
+					array<String^>^ parts = line->Split(':');
+					if (parts->Length == 2) {
+						String^ key = parts[0]->Trim();
+						String^ value = parts[1]->Trim();
+
+						if (key == "05. price") {
+							updatedPrice = value;
+						}
+					}
+				}//end for loop
+				if (oldPrice != updatedPrice)
+				{
+					changed = true;
+					usersDB->updatePortfolio(primaryKey, current_symbol, updatedPrice);
+				}
+			}
+
+			if (changed)
+				savedDataLabel->Text = "Portfolio data not saved.";
+			else
+				savedDataLabel->Text = "Data is up to date.";
+
+		}
+
+		//saves the table to the database
+		private: System::Void saveButton_Click(System::Object^ sender, System::EventArgs^ e) {
+			
+			//for each row in the portfolioGrid
+			for each (DataGridViewRow ^ row in portfolioGrid->Rows) {
+				if (!row->IsNewRow) {
+					//extracts data from the grid
+					String^ symbol = row->Cells["Symbol_col"]->Value->ToString();
+					int quantity = System::Convert::ToInt32(row->Cells["Quantity_col"]->Value);
+					double currentPrice = System::Convert::ToDouble(row->Cells["currentPrice_col"]->Value);
+					double buyPrice = System::Convert::ToDouble(row->Cells["buyPrice_col"]->Value);
+
+					//saves it to the database
+					if (usersDB->insertPortfolio(primaryKey, symbol, quantity, currentPrice, buyPrice)){
+						savedDataLabel->Text = "Data Saved.";
+					}
+					else{
+						savedDataLabel->Text = "Could Not Save Data.";
+						return;
+					}
+				}
+			}
+		}
+
+
+	};
 }

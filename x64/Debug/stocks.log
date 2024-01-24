@@ -1,0 +1,8 @@
+﻿  UsersDB.cpp
+C:\projects\C++ Projects\stocks\UsersDB.cpp(169): warning C4172: returning address of local variable or temporary: portfolioData
+  ApiAccess.obj : MSIL module encountered; incremental linking is disabled for MSIL; performing full link
+UsersDB.obj : warning LNK4248: unresolved typeref token (01000020) for 'sqlite3_stmt'; image may not run
+UsersDB.obj : warning LNK4248: unresolved typeref token (01000026) for 'sqlite3'; image may not run
+  stocks.vcxproj -> C:\projects\C++ Projects\stocks\x64\Debug\stocks.exe
+  C:\projects\C++ Projects\stocks\sqlite3.dll
+  1 File(s) copied

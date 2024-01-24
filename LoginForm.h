@@ -17,9 +17,7 @@ namespace StockPortfolioApp {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Summary for LoginForm
-	/// </summary>
+
 	public ref class LoginForm : public System::Windows::Forms::Form
 	{
 	public:
@@ -40,9 +38,6 @@ namespace StockPortfolioApp {
 		}
 
 	protected:
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
 		~LoginForm()
 		{
 			if (components)
@@ -61,17 +56,10 @@ namespace StockPortfolioApp {
 	private: System::Windows::Forms::Label^ Error_Label;
 
 	private:
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
 		System::ComponentModel::Container ^components;
 		System::Windows::Forms::RadioButton^ selectedRadioButton;
 
 #pragma region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
 		void InitializeComponent(void)
 		{
 			this->userPromptLabel = (gcnew System::Windows::Forms::Label());
